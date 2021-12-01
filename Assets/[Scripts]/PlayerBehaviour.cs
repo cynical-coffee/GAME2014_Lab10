@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 public class PlayerBehaviour : MonoBehaviour
@@ -29,16 +31,27 @@ public class PlayerBehaviour : MonoBehaviour
     public ParticleSystem dustTrailParticleSystem;
     public Color dustTrailColor;
 
+    [Header("Screen Shake Properties")] 
+    public CinemachineVirtualCamera virtualCamera;
+    public CinemachineBasicMultiChannelPerlin perlin;
+    public float shakeIntensity;
+    public float shakeDuration;
+    public float shakeTimer;
+    public bool isCameraShaking;
+
     private Rigidbody2D mRigidbody2D;
     private Animator animatorController;
 
     // Start is called before the first frame update
     void Start()
     {
+        isCameraShaking = false;
+        shakeTimer = shakeDuration;
         mRigidbody2D = GetComponent<Rigidbody2D>();
         animatorController = GetComponent<Animator>();
         jumpSound = GetComponent<AudioSource>();
         dustTrailParticleSystem = GetComponentInChildren<ParticleSystem>();
+        perlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
     // Update is called once per frame
@@ -46,6 +59,16 @@ public class PlayerBehaviour : MonoBehaviour
     {
         Move();
         CheckIfGrounded();
+        if (isCameraShaking)
+        {
+            shakeTimer -= Time.deltaTime;
+            if (shakeTimer <= 0.0f)
+            {
+                perlin.m_AmplitudeGain = 0.0f;
+                shakeTimer = shakeDuration;
+                isCameraShaking = false;
+            }
+        }
     }
 
     private void Move()
@@ -62,6 +85,7 @@ public class PlayerBehaviour : MonoBehaviour
             if (jump > 0)
             {
                 jumpSound.Play();
+                ShakeCamera();
             }
 
             // Check for Flip
@@ -145,6 +169,12 @@ public class PlayerBehaviour : MonoBehaviour
     {
         dustTrailParticleSystem.GetComponent<Renderer>().material.SetColor("_Color", dustTrailColor);
         dustTrailParticleSystem.Play();
+    }
+
+    private void ShakeCamera()
+    {
+        perlin.m_AmplitudeGain = shakeIntensity;
+        isCameraShaking = true;
     }
 
     // UTILITIES
