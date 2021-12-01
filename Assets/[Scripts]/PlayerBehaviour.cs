@@ -25,13 +25,13 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Sound FX")] 
     public AudioSource jumpSound;
 
-    private Rigidbody2D rigidbody;
+    private Rigidbody2D mRigidbody2D;
     private Animator animatorController;
 
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
+        mRigidbody2D = GetComponent<Rigidbody2D>();
         animatorController = GetComponent<Animator>();
         jumpSound = GetComponent<AudioSource>();
     }
@@ -76,11 +76,11 @@ public class PlayerBehaviour : MonoBehaviour
             float horizontalMoveForce = x * horizontalForce;
             float jumpMoveForce = jump * verticalForce; 
 
-            float mass = rigidbody.mass * rigidbody.gravityScale;
+            float mass = mRigidbody2D.mass * mRigidbody2D.gravityScale;
 
 
-            rigidbody.AddForce(new Vector2(horizontalMoveForce, jumpMoveForce) * mass);
-            rigidbody.velocity *= 0.99f; // scaling / stopping hack
+            mRigidbody2D.AddForce(new Vector2(horizontalMoveForce, jumpMoveForce) * mass);
+            mRigidbody2D.velocity *= 0.99f; // scaling / stopping hack
         }
         else // Air Control
         {
@@ -92,9 +92,9 @@ public class PlayerBehaviour : MonoBehaviour
                 x = FlipAnimation(x);
 
                 float horizontalMoveForce = x * horizontalForce * airControlFactor;
-                float mass = rigidbody.mass * rigidbody.gravityScale;
+                float mass = mRigidbody2D.mass * mRigidbody2D.gravityScale;
 
-                rigidbody.AddForce(new Vector2(horizontalMoveForce, 0.0f) * mass);
+                mRigidbody2D.AddForce(new Vector2(horizontalMoveForce, 0.0f) * mass);
             }
         }
 

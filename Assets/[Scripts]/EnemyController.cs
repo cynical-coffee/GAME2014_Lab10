@@ -18,12 +18,12 @@ public class EnemyController : MonoBehaviour
     [Header("Animation")] 
     public Animator animatorController;
 
-    private Rigidbody2D rigidbody;
+    private Rigidbody2D mRigidbody2D;
 
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
+        mRigidbody2D = GetComponent<Rigidbody2D>();
         enemyLOS = GetComponent<LOS>();
         animatorController = GetComponent<Animator>();
     }
@@ -68,6 +68,7 @@ public class EnemyController : MonoBehaviour
                         
                         if((hit) && (hit.collider.gameObject.CompareTag("Player")))
                         {
+                            Debug.DrawLine(lookInFrontPoint.position, collider.transform.position, Color.red);
                             return true;
                         }
                     }
@@ -98,8 +99,8 @@ public class EnemyController : MonoBehaviour
     {
         if (isGroundAhead)
         {
-            rigidbody.AddForce(Vector2.left * runForce * transform.localScale.x);
-            rigidbody.velocity *= 0.90f;
+            mRigidbody2D.AddForce(Vector2.left * runForce * transform.localScale.x);
+            mRigidbody2D.velocity *= 0.90f;
         }
         else
         {
@@ -137,6 +138,7 @@ public class EnemyController : MonoBehaviour
     {
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, lookAheadPoint.position);
+        Gizmos.color = Color.yellow;
         Gizmos.DrawLine(transform.position, lookInFrontPoint.position);
     }
 }
